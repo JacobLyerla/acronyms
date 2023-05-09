@@ -1,6 +1,5 @@
 package com.example.codingchallenge.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -42,9 +41,8 @@ class AcronymViewModel @Inject constructor(private val repo: AcronymRepository) 
 
     fun getWordsFromAcronym() = viewModelScope.launch(handler) {
         _state.value = AcronymScreenState()
-        _state.value = _state.value?.copy(isLoading = true)
+        _state.value = AcronymScreenState(isLoading = true)
         val result = repo.getWordsFromAcronym(input.value!!.replace(" ", "").trim())
-        Log.d("result", "${_state.value}")
 
         _state.value = when (result) {
             is AcronymResult.Success -> {
