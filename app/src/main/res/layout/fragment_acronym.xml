@@ -1,0 +1,101 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="acronymViewModel"
+            type="com.example.codingchallenge.viewmodel.AcronymViewModel" />
+
+        <variable
+            name="adapter"
+            type="com.example.codingchallenge.view.LongformAdapter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       >
+
+        <EditText
+            android:id="@+id/input_text"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/edit_text_bg"
+            android:hint="@string/hint_text"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@={acronymViewModel.input}"
+            app:onSearchClick="@{() -> acronymViewModel.getWordsFromAcronym()}"
+            app:layout_constraintEnd_toStartOf="@+id/main_button_submit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/main_button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_bg"
+            android:enabled="@{acronymViewModel.input.length() > 0}"
+            android:onClick="@{() -> acronymViewModel.getWordsFromAcronym()}"
+            android:text="@string/search"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/input_text"
+            app:layout_constraintTop_toTopOf="@+id/input_text" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/main_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:padding="32dp"
+            android:adapter="@{adapter}"
+            android:updateState="@{acronymViewModel.state}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/main_button_submit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:itemCount="5"
+            tools:listitem="@layout/single_item" />
+        <ProgressBar
+            android:id="@+id/main_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#80FFFFFF"
+            android:layout_marginTop="32dp"
+            android:visibility="@{acronymViewModel.state.isLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_text" />
+        <TextView
+            android:id="@+id/main_text_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{acronymViewModel.resultCount()}"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="@{acronymViewModel.state.showResultText ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/main_rv" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/main_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:visibility="@{acronymViewModel.state.showResultText ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@id/main_text_count" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
